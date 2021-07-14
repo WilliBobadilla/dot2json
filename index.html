@@ -30,9 +30,11 @@
                 <br>
                 <button onclick="addInput()"> + </button>
                 <button onclick="convert()"> Convert </button>
+                <button id="clearInput" onclick="clearInput()">Clear</button>
             </div>
             <div class="col-sm" id="converted">
-                <textarea name="output" id="output" cols="30" rows="10"></textarea>
+                <textarea name="output" id="output" cols="30" rows="10"></textarea><br>
+                <button id="clearOutput" onclick="clearOuput()">Clear</button>
             </div>
 
         </div>
@@ -94,7 +96,10 @@
         obj = JSON.stringify(obj)
         output.innerHTML = obj
     }
-
+    function clearOuput() {
+        var textArea = document.getElementById('output')
+        textArea.innerHTML = ""
+    }
 
 </script>
 
