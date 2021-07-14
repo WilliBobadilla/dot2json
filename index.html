@@ -100,6 +100,20 @@
         var textArea = document.getElementById('output')
         textArea.innerHTML = ""
     }
+    function clearInput() {
+        var divOfInputs = document.getElementById('toConvert').children
+        var len = divOfInputs.length//don't forget the br element added between the inputs
+        console.log(len)
+        let i;
+        let obj = {};
+        for (i = 0; i < len; i++) {
+            let data = divOfInputs[i];
+            console.log(data)
+            if (i > 0 && data) {
+                data.remove()
+            }
+        }
+    }
 
 </script>
 
