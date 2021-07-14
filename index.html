@@ -1,120 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+      integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      .converted {
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 1rem 1.5rem;
+        background: gainsboro;
+      }
+    </style>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
     <title>dot2json</title>
-</head>
+  </head>
 
-<body>
-    <h3>Dot to Json converter</h3>
-    <div class="container">
+  <body>
+    <div class="container" id="app">
+      <h2 class="my-5">Dot to Json converter</h2>
+      <div>
         <div class="row">
-            <div class="col-sm">
-                <div id="toConvert">
-                    <input type="text">
-                </div>
-                <br>
-                <button onclick="addInput()"> + </button>
-                <button onclick="convert()"> Convert </button>
-                <button id="clearInput" onclick="clearInput()">Clear</button>
+          <div class="col-sm">
+            <div
+              v-for="(input, index) in inputs"
+              :key="'input-'+generateKey(index)"
+            >
+              <div class="input-group my-2">
+                <input
+                  type="text"
+                  v-model="inputs[index]"
+                  @keyup.enter="addInput"
+                  :ref="`input-${index}`"
+                  class="form-control"
+                />
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  @click="removeInput(index)"
+                >
+                  -
+                </button>
+              </div>
             </div>
-            <div class="col-sm" id="converted">
-                <textarea name="output" id="output" cols="30" rows="10"></textarea><br>
-                <button id="clearOutput" onclick="clearOuput()">Clear</button>
-            </div>
-
+            <br />
+            <button class="btn btn-success" @click="addInput">+</button>
+            <button class="btn btn-primary" @click="clearInputs">Clear</button>
+          </div>
+          <div class="converted col-sm ml-5">
+            <pre>{{formatedInputs}}</pre>
+          </div>
         </div>
+      </div>
     </div>
-</body>
-<script>
-    function stringToObj(path, value, obj) {
-        var objValue = value;
-        try {
-            objValue = JSON.parse(value);
-        } catch (e) { } //eat the error, must not be json so carry on... Hack to do a valid JSON check
-
-        var parts = path.split("."), part;
-        var last = parts.pop();
-        while (part = parts.shift()) {
-            if (typeof obj[part] != "object")
-                obj[part] = {};
-            obj = obj[part];
-        }
-        if (obj.hasOwnProperty(last) && obj[last] && obj[last].constructor === Array) {
-            obj[last].push(objValue);
-        }
-        else if (obj.hasOwnProperty(last) && obj[last]) {
-            var objArray = [];
-            objArray.push(obj[last])
-            objArray.push(objValue);
-            obj[last] = objArray;
-        }
-        else {
-            obj[last] = objValue;
-        }
-    }
-
-    function addInput() {
-        var newInputText = document.createElement('input')
-        newInputText.setAttribute('type', 'text')
-        var toConvert = document.getElementById('toConvert')
-        var space = document.createElement('br')
-        toConvert.appendChild(space)
-        toConvert.appendChild(newInputText)
-
-
-    }
-    function convert() {
-        var divOfInputs = document.getElementById('toConvert').children
-        var len = divOfInputs.length//don't forget the br element added between the inputs
-        console.log(len)
-        let i;
-        let obj = {};
-        for (i = 0; i < len; i++) {
-            let data = divOfInputs[i];
-            if (data.localName != 'br') {
-                console.log(data.value)
-                stringToObj(data.value, '', obj)
-            }
-        }
-        console.log(obj)
-        var output = document.getElementById('output')
-        obj = JSON.stringify(obj)
-        output.innerHTML = obj
-    }
-    function clearOuput() {
-        var textArea = document.getElementById('output')
-        textArea.innerHTML = ""
-    }
-    function clearInput() {
-        var divOfInputs = document.getElementById('toConvert').children
-        var len = divOfInputs.length//don't forget the br element added between the inputs
-        console.log(len)
-        let i;
-        let obj = {};
-        for (i = 0; i < len; i++) {
-            let data = divOfInputs[i];
-            console.log(data)
-            if (i > 0 && data) {
-                data.remove()
-            }
-        }
-    }
-
-</script>
-
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+  <script src="index.js"></script>
 </html>
