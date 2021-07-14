@@ -35,8 +35,8 @@ var app = new Vue({
             [objectKey]: isArray
               ? [acc]
               : !Object.entries(acc).length
-              ? ''
-              : acc,
+                ? ''
+                : acc,
           };
         }
 
