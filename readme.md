@@ -16,7 +16,7 @@ https://willibobadilla.github.io/dot2json/index
 ## Some screenshoots :camera:
 
 <p float="left">
-<img src="https://github.com/WilliBobadilla/dot2json/blob/master/screenshoots/img1.png"  width="25%" height="35%" />
+<img src="https://github.com/WilliBobadilla/dot2json/blob/master/screenshoots/img1.png"  width="60%" height="40%" />
 </p>
 
 ## Authors :man:
