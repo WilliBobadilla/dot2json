@@ -21,5 +21,5 @@ https://willibobadilla.github.io/dot2json/index
 
 ## Authors :man:
 
-1. [Williams Bobadilla]()
-2. [Fernando Mellone]()
+1. [Williams Bobadilla](https://github.com/WilliBobadilla)
+2. [Fernando Mellone](https://github.com/femellone)
